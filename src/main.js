@@ -1,5 +1,12 @@
-import { rifts, currentOrNextOccurrence, upcomingOccurrences, isLive, nextDailyReset } from "./schedule.js";
-import { formatCountdown, formatLocalDay, formatLocalTime, formatUtcTime, localTimeZone } from "./format.js";
+import { rifts, dailyReset, currentOrNextOccurrence, occurrencesBetween, upcomingOccurrences, isLive } from "./schedule.js";
+import {
+  formatCountdown,
+  formatLocalDate,
+  formatLocalDay,
+  formatLocalTime,
+  formatUtcTime,
+  localTimeZone,
+} from "./format.js";
 import {
   notificationState,
   registerServiceWorker,
@@ -9,6 +16,9 @@ import {
   turnOffNotifications,
   turnOnNotifications,
 } from "./notifications.js";
+
+const timelineEvents = [...rifts, dailyReset];
+const secondsInDay = 24 * 60 * 60;
 
 const statusElement = document.getElementById("notification-status");
 const toggleButton = document.getElementById("notification-toggle");
@@ -20,50 +30,108 @@ function renderTimeZone() {
   }
 }
 
-function minutesIntoLocalDay(date) {
-  return date.getHours() * 60 + date.getMinutes();
+function renderAxis() {
+  const labels = [];
+  for (let hour = 0; hour <= 24; hour += 1) {
+    const label = document.createElement("span");
+    label.className = hour % 3 === 0 ? "timeline-hour" : "timeline-hour is-minor";
+    label.style.left = `${(hour / 24) * 100}%`;
+    label.textContent = String(hour);
+    labels.push(label);
+  }
+  document.getElementById("timeline-axis").replaceChildren(...labels);
 }
 
-function renderDailyTimes(rift, listElement, now) {
-  const starts = rift.startHoursUtc
-    .map((hour) => new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), hour)))
-    .sort((first, second) => minutesIntoLocalDay(first) - minutesIntoLocalDay(second));
-  const items = starts.map((start) => {
+function startOfLocalDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function startOfNextLocalDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+}
+
+function percentOfLocalDay(date, dayStart, dayEnd) {
+  if (date <= dayStart) {
+    return 0;
+  }
+  if (date >= dayEnd) {
+    return 100;
+  }
+  const secondsIntoDay = date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
+  return (secondsIntoDay / secondsInDay) * 100;
+}
+
+function describeOccurrence(occurrence) {
+  const utcStart = formatUtcTime(occurrence.start);
+  if (occurrence.gameEvent.durationMinutes === 0) {
+    return `${formatLocalTime(occurrence.start)}, ${utcStart}`;
+  }
+  return `${formatLocalTime(occurrence.start)} to ${formatLocalTime(occurrence.end)}, starts ${utcStart}`;
+}
+
+function renderTrack(gameEvent, dayStart, dayEnd) {
+  const occurrenceList = document.createElement("ol");
+  occurrenceList.className = "timeline-occurrences";
+  for (const occurrence of occurrencesBetween(gameEvent, dayStart, dayEnd)) {
+    const isMarker = gameEvent.durationMinutes === 0;
+    const left = percentOfLocalDay(occurrence.start, dayStart, dayEnd);
     const item = document.createElement("li");
-    const localTime = document.createElement("time");
-    localTime.dateTime = start.toISOString();
-    localTime.textContent = formatLocalTime(start);
-    const utcTime = document.createElement("span");
-    utcTime.className = "muted";
-    utcTime.textContent = formatUtcTime(start);
-    item.append(localTime, " ", utcTime);
-    return item;
-  });
-  listElement.replaceChildren(...items);
+    item.className = isMarker ? "timeline-marker" : "timeline-bar";
+    item.style.left = `${left}%`;
+    if (!isMarker) {
+      item.style.width = `${percentOfLocalDay(occurrence.end, dayStart, dayEnd) - left}%`;
+    }
+    item.dataset.start = String(occurrence.start.getTime());
+    item.dataset.end = String(occurrence.end.getTime());
+    item.title = describeOccurrence(occurrence);
+    const description = document.createElement("span");
+    description.className = "visually-hidden";
+    description.textContent = describeOccurrence(occurrence);
+    item.append(description);
+    occurrenceList.append(item);
+  }
+  const nowLine = document.createElement("div");
+  nowLine.className = "timeline-now";
+  document
+    .querySelector(`[data-event="${gameEvent.id}"] [data-field="track"]`)
+    .replaceChildren(occurrenceList, nowLine);
 }
 
-function renderRift(rift, now) {
-  const card = document.querySelector(`[data-rift="${rift.id}"]`);
-  const occurrence = currentOrNextOccurrence(rift, now);
+function renderDay(now) {
+  const dayStart = startOfLocalDay(now);
+  const dayEnd = startOfNextLocalDay(now);
+  document.getElementById("schedule-date").textContent = formatLocalDate(now);
+  for (const gameEvent of timelineEvents) {
+    renderTrack(gameEvent, dayStart, dayEnd);
+  }
+}
+
+function updateTimeline(now) {
+  const nowPercent = percentOfLocalDay(now, startOfLocalDay(now), startOfNextLocalDay(now));
+  for (const nowLine of document.querySelectorAll(".timeline-now")) {
+    nowLine.style.left = `${nowPercent}%`;
+  }
+  for (const item of document.querySelectorAll(".timeline-bar, .timeline-marker")) {
+    const start = Number(item.dataset.start);
+    const end = Number(item.dataset.end);
+    item.classList.toggle("is-past", end <= now.getTime() && start < now.getTime());
+    item.classList.toggle("is-live", start <= now.getTime() && now.getTime() < end);
+  }
+}
+
+function renderStatus(gameEvent, now) {
+  const row = document.querySelector(`[data-event="${gameEvent.id}"]`);
+  const occurrence = currentOrNextOccurrence(gameEvent, now);
   const live = isLive(occurrence, now);
-
-  const stateBadge = card.querySelector('[data-field="state"]');
-  stateBadge.hidden = !live;
-  stateBadge.textContent = "Live now";
-
-  card.classList.toggle("is-live", live);
-  card.querySelector('[data-field="countdown"]').textContent = live
-    ? `Ends in ${formatCountdown(occurrence.end - now)}`
-    : `Starts in ${formatCountdown(occurrence.start - now)}`;
-  card.querySelector('[data-field="next"]').textContent =
-    `${formatLocalDay(occurrence.start, now)} ${formatLocalTime(occurrence.start)} to ${formatLocalTime(occurrence.end)}`;
-}
-
-function renderDailyReset(now) {
-  const reset = nextDailyReset(now);
-  document.getElementById("reset-countdown").textContent = `Resets in ${formatCountdown(reset - now)}`;
-  document.getElementById("reset-time").textContent =
-    `${formatLocalDay(reset, now)} ${formatLocalTime(reset)}, ${formatUtcTime(reset)}`;
+  row.classList.toggle("is-live", live);
+  const status = row.querySelector('[data-field="status"]');
+  if (live) {
+    const liveLabel = document.createElement("strong");
+    liveLabel.textContent = "Live now";
+    status.replaceChildren(liveLabel, `, ends in ${formatCountdown(occurrence.end - now)}`);
+    return;
+  }
+  status.textContent = `${formatLocalDay(occurrence.start, now)} ${formatLocalTime(occurrence.start)}, in ${formatCountdown(occurrence.start - now)}`;
 }
 
 function renderNotificationControls() {
@@ -115,23 +183,24 @@ testButton.addEventListener("click", async () => {
   }
 });
 
-let renderedTimesForUtcDay = null;
+let renderedLocalDay = null;
 
 function tick() {
   const now = new Date();
-  const utcDay = now.toISOString().slice(0, 10);
-  for (const rift of rifts) {
-    if (renderedTimesForUtcDay !== utcDay) {
-      renderDailyTimes(rift, document.querySelector(`[data-rift="${rift.id}"] [data-field="times"]`), now);
-    }
-    renderRift(rift, now);
+  const localDay = startOfLocalDay(now).getTime();
+  if (renderedLocalDay !== localDay) {
+    renderDay(now);
+    renderedLocalDay = localDay;
   }
-  renderedTimesForUtcDay = utcDay;
-  renderDailyReset(now);
+  updateTimeline(now);
+  for (const gameEvent of timelineEvents) {
+    renderStatus(gameEvent, now);
+  }
   sendDueReminders(upcomingOccurrences(now), now, showError);
 }
 
 renderTimeZone();
+renderAxis();
 renderNotificationControls();
 tick();
 setInterval(tick, 1000);

@@ -33,6 +33,7 @@
 ## This project
 
 - Rift timers for ArcheAge Chronicles, live at https://aac.jor.dev/. No backend, nothing leaves the browser.
-- The schedule lives in `src/schedule.js` as UTC start hours, next to the daily reset hour (04:00 UTC, no notification). When the game changes a time, change it there and in the static fallback times, footer text and meta descriptions in `index.html`.
+- The schedule lives in `src/schedule.js` as UTC start hours. The daily reset (04:00 UTC) is an event with a duration of 0, drawn as a marker and left out of the notifications. When the game changes a time, change it there and in the static fallback text, footer text and meta descriptions in `index.html`.
+- The timeline is styled after the daily schedule window in the game. It shows one local day, positions come from the local time of day, so a daylight saving switch day is off by an hour around the switch.
 - Notifications are sent by the open page with `setInterval`, there is no push server. `service-worker.js` only exists because Chrome on Android needs `registration.showNotification` and to focus the tab on a click.
 - `brand/` holds the jor.dev tokens, base styles, fonts and logo. Do not edit it, it is copied in from the brand.

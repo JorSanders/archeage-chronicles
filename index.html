@@ -68,40 +68,45 @@
         </p>
       </header>
 
-      <section class="rifts" aria-label="Rifts">
-        <article class="card rift" data-rift="crimson-rift" aria-labelledby="crimson-rift-heading">
-          <div class="rift-heading">
-            <h2 id="crimson-rift-heading">Crimson Rift</h2>
-            <span class="badge" data-field="state" hidden></span>
+      <section class="card schedule" aria-labelledby="schedule-heading">
+        <div class="schedule-heading">
+          <h2 id="schedule-heading">Today</h2>
+          <p class="muted" id="schedule-date"></p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-row timeline-hours" aria-hidden="true">
+            <span class="timeline-label"></span>
+            <div class="timeline-axis" id="timeline-axis"></div>
           </div>
-          <p class="countdown" data-field="countdown"></p>
-          <p class="muted" data-field="next"></p>
-          <ul class="rift-times" data-field="times">
-            <li>03:00 UTC</li>
-            <li>11:00 UTC</li>
-            <li>19:00 UTC</li>
+          <ul class="timeline-rows">
+            <li class="timeline-row" data-event="crimson-rift">
+              <div class="timeline-label">
+                <h3>Crimson Rift</h3>
+                <p class="timeline-status" data-field="status">03:00, 11:00 and 19:00 UTC, 30 minutes</p>
+              </div>
+              <div class="timeline-track" data-field="track"></div>
+            </li>
+            <li class="timeline-row" data-event="brutal-nightmare">
+              <div class="timeline-label">
+                <h3>Brutal Nightmare</h3>
+                <p class="timeline-status" data-field="status">04:00, 12:00 and 20:00 UTC, 30 minutes</p>
+              </div>
+              <div class="timeline-track" data-field="track"></div>
+            </li>
+            <li class="timeline-row" data-event="daily-reset">
+              <div class="timeline-label">
+                <h3>Daily reset</h3>
+                <p class="timeline-status" data-field="status">04:00 UTC</p>
+              </div>
+              <div class="timeline-track" data-field="track"></div>
+            </li>
           </ul>
-        </article>
-
-        <article class="card rift" data-rift="brutal-nightmare" aria-labelledby="brutal-nightmare-heading">
-          <div class="rift-heading">
-            <h2 id="brutal-nightmare-heading">Brutal Nightmare</h2>
-            <span class="badge" data-field="state" hidden></span>
-          </div>
-          <p class="countdown" data-field="countdown"></p>
-          <p class="muted" data-field="next"></p>
-          <ul class="rift-times" data-field="times">
-            <li>04:00 UTC</li>
-            <li>12:00 UTC</li>
-            <li>20:00 UTC</li>
-          </ul>
-        </article>
-      </section>
-
-      <section class="card reset" aria-labelledby="reset-heading">
-        <h2 id="reset-heading">Daily reset</h2>
-        <p class="countdown" id="reset-countdown"></p>
-        <p class="muted" id="reset-time">Every day at 04:00 UTC</p>
+        </div>
+        <ul class="timeline-legend">
+          <li><span class="legend-symbol legend-bar" aria-hidden="true"></span> Rift</li>
+          <li><span class="legend-symbol legend-marker" aria-hidden="true"></span> Reset</li>
+          <li><span class="legend-symbol legend-now" aria-hidden="true"></span> Now</li>
+        </ul>
       </section>
 
       <section class="card notifications" aria-labelledby="notifications-heading">

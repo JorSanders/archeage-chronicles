@@ -72,7 +72,7 @@ export async function showNotification(title, options) {
 }
 
 function occurrenceKey(occurrence) {
-  return `${occurrence.rift.id}-${occurrence.start.toISOString()}`;
+  return `${occurrence.gameEvent.id}-${occurrence.start.toISOString()}`;
 }
 
 export function sendDueReminders(occurrences, now, onError) {
@@ -88,9 +88,9 @@ export function sendDueReminders(occurrences, now, onError) {
     }
     remindedOccurrences.add(key);
     const minutesLeft = Math.ceil((occurrence.start - now) / 60000);
-    const title = `${occurrence.rift.name} in ${minutesLeft} ${minutesLeft === 1 ? "minute" : "minutes"}`;
+    const title = `${occurrence.gameEvent.name} in ${minutesLeft} ${minutesLeft === 1 ? "minute" : "minutes"}`;
     showNotification(title, {
-      body: `Starts at ${formatLocalTime(occurrence.start)} and runs for ${occurrence.rift.durationMinutes} minutes.`,
+      body: `Starts at ${formatLocalTime(occurrence.start)} and runs for ${occurrence.gameEvent.durationMinutes} minutes.`,
       tag: key,
       icon: "./apple-touch-icon.png",
     }).catch(onError);

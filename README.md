@@ -9,14 +9,15 @@ Live at **https://aac.jor.dev/**
 1. Two rifts, every day, 30 minutes each:
    - Crimson Rift at 03:00, 11:00 and 19:00 UTC
    - Brutal Nightmare at 04:00, 12:00 and 20:00 UTC
-2. A countdown to the daily reset at 04:00 UTC. No notification for that one.
-3. Each rift shows a countdown to its next start, or "Live now" with a countdown to the end while it runs.
-4. All times are shown in your browser's time zone, with the UTC time next to them.
-5. Browser notifications 10 minutes before each rift starts:
+2. The daily reset at 04:00 UTC. No notification for that one.
+3. A timeline of today, laid out like the daily schedule in the game: one row per event, a column per hour, a bar for each rift, a triangle for the reset and a line for now. Rifts that are over fade out, the one that is running gets an outline.
+4. Next to each row, a countdown to the next start, or "Live now" with a countdown to the end while it runs.
+5. The timeline runs from midnight to midnight in your browser's time zone. Hover a bar to see its UTC time.
+6. Browser notifications 10 minutes before each rift starts:
    - turn them on with the button, the browser asks for permission once
    - the choice is remembered, so reopening the page keeps them on
    - "Send a test" shows what a reminder looks like
-6. What I tested: Chromium on desktop, with a faked clock to check the reminder fires at exactly 10 minutes before. I have not tried Firefox, Safari or a phone yet.
+7. What I tested: Chromium on desktop, with a faked clock to check the reminder fires at exactly 10 minutes before. I have not tried Firefox, Safari or a phone yet.
 
 ## How the notifications work
 
@@ -38,8 +39,8 @@ Then open http://localhost:8000. Notifications work on `localhost` too, browsers
 
 ```
 index.html            the page
-src/main.js           renders the countdowns and wires up the buttons
-src/schedule.js       the rift schedule and daily reset in UTC
+src/main.js           renders the timeline and countdowns, wires up the buttons
+src/schedule.js       the rifts and daily reset in UTC
 src/notifications.js  permission, the on or off choice, and the reminders
 src/format.js         time and countdown formatting
 src/style.css         styles on top of the brand tokens
