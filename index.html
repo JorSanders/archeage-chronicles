@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ArcheAge Chronicles rift timers</title>
+    <meta name="description" content="When the next Crimson Rift, Brutal Nightmare and daily reset are in ArcheAge Chronicles, in your own time zone, with a browser notification 10 minutes before each rift." />
+    <link rel="canonical" href="https://aac.jor.dev/" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f3f3f3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121417" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://aac.jor.dev/" />
+    <meta property="og:title" content="ArcheAge Chronicles rift timers" />
+    <meta property="og:description" content="When the next Crimson Rift, Brutal Nightmare and daily reset are in ArcheAge Chronicles, in your own time zone, with a browser notification 10 minutes before each rift." />
+    <meta property="og:image" content="https://aac.jor.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ArcheAge Chronicles rift timers, by jor.dev" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ArcheAge Chronicles rift timers" />
+    <meta name="twitter:description" content="When the next Crimson Rift, Brutal Nightmare and daily reset are in ArcheAge Chronicles, in your own time zone, with a browser notification 10 minutes before each rift." />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="./favicon.ico" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="preload" href="./brand/fonts/Montserrat-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./brand/fonts/Montserrat-SemiBold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./brand/fonts/Montserrat-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="./brand/tokens.css" />
+    <link rel="stylesheet" href="./brand/base.css" />
+    <link rel="stylesheet" href="./src/style.css" />
+    <script src="./brand/theme.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "ArcheAge Chronicles rift timers",
+        "url": "https://aac.jor.dev/",
+        "description": "When the next Crimson Rift, Brutal Nightmare and daily reset are in ArcheAge Chronicles, in your own time zone, with a browser notification 10 minutes before each rift.",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "author": { "@type": "Person", "name": "Jor Sanders", "url": "https://jor.dev" }
+      }
+    </script>
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand-link" href="https://jor.dev" aria-label="jor.dev">
+        <img class="only-light" src="./brand/logo/wordmark.svg" alt="jor.dev" />
+        <img class="only-dark" src="./brand/logo/wordmark-on-dark.svg" alt="jor.dev" />
+      </a>
+      <div class="theme-picker" role="group" aria-label="Color scheme">
+        <button type="button" data-theme-choice="auto" aria-pressed="true">Auto</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </header>
+
+    <main class="main" id="main">
+      <header class="page-header">
+        <h1>ArcheAge Chronicles rift timers</h1>
+        <p class="muted">
+          Times are in your time zone<span id="time-zone"></span>. The game runs them on UTC.
+        </p>
+      </header>
+
+      <section class="rifts" aria-label="Rifts">
+        <article class="card rift" data-rift="crimson-rift" aria-labelledby="crimson-rift-heading">
+          <div class="rift-heading">
+            <h2 id="crimson-rift-heading">Crimson Rift</h2>
+            <span class="badge" data-field="state" hidden></span>
+          </div>
+          <p class="countdown" data-field="countdown"></p>
+          <p class="muted" data-field="next"></p>
+          <ul class="rift-times" data-field="times">
+            <li>03:00 UTC</li>
+            <li>11:00 UTC</li>
+            <li>19:00 UTC</li>
+          </ul>
+        </article>
+
+        <article class="card rift" data-rift="brutal-nightmare" aria-labelledby="brutal-nightmare-heading">
+          <div class="rift-heading">
+            <h2 id="brutal-nightmare-heading">Brutal Nightmare</h2>
+            <span class="badge" data-field="state" hidden></span>
+          </div>
+          <p class="countdown" data-field="countdown"></p>
+          <p class="muted" data-field="next"></p>
+          <ul class="rift-times" data-field="times">
+            <li>04:00 UTC</li>
+            <li>12:00 UTC</li>
+            <li>20:00 UTC</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="card reset" aria-labelledby="reset-heading">
+        <h2 id="reset-heading">Daily reset</h2>
+        <p class="countdown" id="reset-countdown"></p>
+        <p class="muted" id="reset-time">Every day at 04:00 UTC</p>
+      </section>
+
+      <section class="card notifications" aria-labelledby="notifications-heading">
+        <h2 id="notifications-heading">Notifications</h2>
+        <p id="notification-status" role="status">Checking if your browser can show notifications.</p>
+        <div class="notification-actions">
+          <button type="button" class="button" id="notification-toggle" hidden>Turn on notifications</button>
+          <button type="button" class="button button-outline" id="notification-test" hidden>Send a test</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>My timer for the rifts in ArcheAge Chronicles. Crimson Rift starts at 03:00, 11:00 and 19:00 UTC, Brutal Nightmare at 04:00, 12:00 and 20:00 UTC, and both last 30 minutes. The daily reset is at 04:00 UTC. This page shows them in your own time zone and can send a browser notification 10 minutes before each rift starts.</p>
+      <p>Notifications come from this page itself, so they only work while it is open in a tab. Nothing leaves your browser.</p>
+      <p class="site-footer-tagline">Provided free of charge, without tracking. For the love of the game.</p>
+      <p class="site-footer-meta">
+        <span>Made by <a href="https://jor.dev">Jor Sanders</a></span>
+        <a href="https://github.com/JorSanders/archeage-chronicles">Source on GitHub</a>
+        <a href="https://github.com/JorSanders/archeage-chronicles/issues">Found a problem?</a>
+      </p>
+    </footer>
+  </body>
+</html>

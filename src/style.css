@@ -1,0 +1,98 @@
+[hidden] {
+  display: none !important;
+}
+
+.main {
+  display: grid;
+  gap: var(--space-8);
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) 0;
+}
+
+.page-header {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.rifts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-4);
+}
+
+.rift {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+}
+
+.rift.is-live {
+  border-color: var(--focus);
+}
+
+.rift-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.rift h2 {
+  font-size: var(--text-lg);
+}
+
+.countdown {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.rift-times {
+  display: grid;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding: var(--space-3) 0 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+
+.rift-times .muted {
+  font-size: var(--text-sm);
+}
+
+.reset {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.notifications {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.reset h2,
+.notifications h2 {
+  font-size: var(--text-lg);
+}
+
+.notification-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.notification-actions:not(:has(button:not([hidden]))) {
+  display: none;
+}
+
+@media (max-width: 30rem) {
+  .main {
+    padding-inline: var(--space-4);
+  }
+
+  h1 {
+    font-size: var(--text-xl);
+  }
+}
